@@ -1,34 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animated Login Page2</title>
-    <link rel="stylesheet" href="style.css">
+    <title>My App Store - Download Amazing Apps</title>
+    <meta name="description" content="Discover and download amazing apps like Flippy Hero, MirakleAi, SeekWise, and Wapchat from our app store.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glow {
+                box-shadow: 0 0 5px theme('colors.primary'), 0 0 20px theme('colors.primary');
+            }
+            .glow:hover {
+                box-shadow: 0 0 10px theme('colors.primary'), 0 0 30px theme('colors.primary');
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="box">
-        <form action="">
-            <h2>Sign In</h2>
-            <div class="input-box">
-                <input type="text" required>
-                <span>Username</span>
-                <i></i>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
+        <nav class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-primary">My App Store</h1>
+            <div class="flex items-center space-x-4">
+                <button id="searchToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon dark:fas fa-sun"></i>
+                </button>
             </div>
+        </nav>
+        <div id="searchBar" class="hidden bg-white dark:bg-gray-800 p-4">
+            <input type="text" id="searchInput" placeholder="Search apps..." class="w-full p-2 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700">
+        </div>
+    </header>
 
-            <div class="input-box">
-                <input type="password" required>
-                <span>Enter Password</span>
-                <i></i>
-            </div>
+    <main class="container mx-auto px-4 py-8">
+        <div id="appGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- App cards will be dynamically inserted here -->
+        </div>
+    </main>
 
-            <input type="submit" value="Login">
-            <div class="links">
-                <a href="#">Forgot Password?</a>
-                <a href="#">SignUp</a>
-            </div>
-        </form>
+    <footer class="bg-white dark:bg-gray-800 mt-12 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2023 My App Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="cookieNotice" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center hidden">
+        <p class="mb-2">This website uses cookies to ensure you get the best experience on our website.</p>
+        <button id="acceptCookies" class="bg-primary text-white font-bold py-2 px-4 rounded">Accept</button>
     </div>
-    
+
+    <script>
+        const apps = [
+            {
+                name: "Flippy Hero",
+                description: "Welcome to FlippyHero, the ultimate bottle flipping challenge that will test your precision and agility!",
+                icon: "fas fa-bottle-water",
+                appId: "app2724972-by53qh",
+                encodedUrl: "aHR0cDovL3d3dy5hcHBjcmVhdG9yMjQuY29tL2FwcDI3MjQ5NzItYnk1M3Fo",
+                rating: 4.5,
+                reviews: 1250
+            },
+            {
+                name: "MirakleAi",
+                description: "MirakleAi is an innovative artificial intelligence solutions technology designed to revolutionize various industries.",
+                icon: "fas fa-robot",
+                appId: "app2777451-w9asqr",
+                encodedUrl: "aHR0cDovL3d3dy5hcHBjcmVhdG9yMjQuY29tL2FwcDI3Nzc0NTEtdzlhc3Fy",
+                rating: 4.8,
+                reviews: 980
+            },
+            {
+                name: "SeekWise",
+                description: "SeekWise is an innovative and user-centric free search engine designed to empower users with intelligent and efficient information retrieval.",
+                icon: "fas fa-search",
+                appId: "app2842542-f9en45",
+                encodedUrl: "aHR0cDovL3d3dy5hcHBjcmVhdG9yMjQuY29tL2FwcDI4NDI1NDItZjllbjQ1",
+                rating: 4.2,
+                reviews: 750
+            },
+            {
+                name: "Wapchat",
+                description: "Welcome to Wapchat, where connections spark and conversations flow. Join our vibrant community and chat your way to new friendships, fun, and more!",
+                icon: "fas fa-comments",
+                appId: "app1148362-f6a0hw",
+                encodedUrl: "aHR0cDovL3d3dy5hcHBjcmVhdG9yMjQuY29tL2FwcDExNDgzNjItZjZhMGh3",
+                rating: 4.6,
+                reviews: 2100
+            }
+        ];
+
+        function createStarRating(rating) {
+            const numStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let stars = '';
+            for (let i = 0; i < numStars; i++) {
+                stars += '<i class="fas fa-star text-primary"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt text-primary"></i>';
+            }
+            return stars;
+        }
+
+        function createAppCard(app) {
+            return `
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col items-center transition-transform duration-300 transform hover:scale-105">
+                    <i class="${app.icon} text-5xl text-primary mb-4"></i>
+                    <h2 class="text-xl font-semibold mb-2">${app.name}</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">${app.description}</p>
+                    <div class="flex items-center mb-2">
+                        ${createStarRating(app.rating)}
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">(${app.reviews} reviews)</span>
+                    </div>
+                    <button class="download-btn bg-gradient-to-r from-primary to-secondary text-white font-bold py-2 px-4 rounded-full transition-all duration-300 glow" data-app="${app.appId}" data-encoded-url="${app.encodedUrl}">
+                        Download Now
+                    </button>
+                </div>
+            `;
+        }
+
+        function attachDownloadListeners() {
+            const downloadButtons = document.querySelectorAll('.download-btn');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const appId = button.getAttribute('data-app');
+                    const encodedUrl = button.getAttribute('data-encoded-url');
+                    startDownload(appId, encodedUrl);
+                });
+            });
+        }
+
+        function startDownload(appId, encodedUrl) {
+            const decodedUrl = atob(encodedUrl);
+            const app = apps.find(a => a.appId === appId);
+            
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = decodedUrl;
+            a.download = `${app.name}.apk`;
+            
+            // Append to the document and trigger the download
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            document.body.removeChild(a);
+
+            console.log(`Download started for ${app.name}`);
+        }
+
+
+        function loadApps() {
+            const appGrid = document.getElementById('appGrid');
+            apps.forEach(app => {
+                appGrid.innerHTML += createAppCard(app);
+            });
+            attachDownloadListeners();
+        }
+
+        window.addEventListener('DOMContentLoaded', loadApps);
+
+
+    </script>
 </body>
 </html>
+
