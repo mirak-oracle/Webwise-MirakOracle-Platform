@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebWise - Mirak Oracle Platform </title>
+    <title>WebWise - Mirak Oracle Platform | AI-Powered Web Solutions</title>
     <meta name="description" content="WebWise - Mirak Oracle Platform offers cutting-edge AI-powered web solutions. Discover our innovative apps and services for smarter, more efficient web experiences.">
     <meta name="keywords" content="WebWise, Mirak Oracle, AI platform, web solutions, smart apps, Flippy Hero, MirakleAi, SeekWise, Wapchat">
     <meta name="author" content="Mirak Oracle">
@@ -29,7 +29,7 @@
     <meta name="revisit-after" content="7 days">
     <meta name="generator" content="WebWise - Mirak Oracle Platform">
 
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -57,21 +57,31 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
     <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-10">
-        <nav class="container mx-auto px-4 py-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-primary">WebWise - Mirak Oracle Platform</h1>
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-primary">WebWise - Mirak Oracle Platform</h1>
             <div class="flex items-center space-x-4">
-                
+                <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-moon dark:fas fa-sun"></i>
+                </button>
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobileMenu" class="hidden md:hidden bg-white dark:bg-gray-800 p-4">
+            <!-- Add mobile menu items here if needed -->
+        </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <div id="appGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div id="appGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <!-- App cards will be dynamically inserted here -->
         </div>
     </main>
 
     <footer class="bg-white dark:bg-gray-800 mt-12 py-6">
         <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 WebWise - Mirak Oracle Platform,Part Of Mirakle Group. All rights reserved.</p>
+            <p>&copy; 2025 WebWise - Mirak Oracle Platform, Part Of Mirakle Group. All rights reserved.</p>
         </div>
     </footer>
 
@@ -125,19 +135,15 @@
         ];
 
         function createStarRating(rating) {
-            const numStars = Math.floor(rating);
-            const halfStar = rating % 1 >= 0.5;
-            let stars = "";
-            for (let i = 0; i < numStars; i++) {
-                stars += '<i class="fas fa-star text-yellow-400"></i>';
-            }
-            if (halfStar) {
-                stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
-            }
-            for (let i = numStars + halfStar; i < 5; i++) {
-                stars += '<i class="far fa-star text-yellow-400"></i>';
-            }
-            return stars;
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            return `
+                ${'<i class="fas fa-star text-yellow-400"></i>'.repeat(fullStars)}
+                ${hasHalfStar ? '<i class="fas fa-star-half-alt text-yellow-400"></i>' : ''}
+                ${'<i class="far fa-star text-yellow-400"></i>'.repeat(emptyStars)}
+            `;
         }
 
         function createAppCard(app) {
@@ -146,18 +152,18 @@
                     <i class="${app.icon} text-5xl text-primary mb-4"></i>
                     <h2 class="text-xl font-semibold mb-2">${app.name}</h2>
                     <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">${app.description}</p>
-                    <div class="flex items-center mb-2">
+                    <div class="flex items-center mb-4">
                         ${createStarRating(app.rating)}
                         <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">(${app.reviews} reviews)</span>
                     </div>
-                    <div class="flex space-x-2">
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                         <button class="download-btn bg-gradient-to-r from-primary to-secondary text-white font-bold py-2 px-4 rounded-full transition-all duration-300 glow" data-app="${app.appId}" data-encoded-url="${app.encodedUrl}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                             Download
                         </button>
-                        <a href="${app.apkPureUrl}" target="_blank" rel="noopener noreferrer" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+                        <a href="${app.apkPureUrl}" target="_blank" rel="noopener noreferrer" class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-gray-300 dark:hover:bg-gray-600 text-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
                             </svg>
@@ -185,14 +191,46 @@
         }
 
         function loadApps() {
-            const appContainer = document.querySelector('.container');
+            const appGrid = document.getElementById('appGrid');
             apps.forEach(app => {
-                appContainer.innerHTML += createAppCard(app);
+                appGrid.innerHTML += createAppCard(app);
             });
             attachDownloadListeners();
         }
 
-        window.addEventListener('DOMContentLoaded', loadApps);
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function initCookieNotice() {
+            const cookieNotice = document.getElementById('cookieNotice');
+            const acceptCookies = document.getElementById('acceptCookies');
+
+            if (!localStorage.getItem('cookiesAccepted')) {
+                cookieNotice.classList.remove('hidden');
+            }
+
+            acceptCookies.addEventListener('click', () => {
+                localStorage.setItem('cookiesAccepted', 'true');
+                cookieNotice.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadApps();
+            initCookieNotice();
+
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+        });
     </script>
 </body>
 </html>
